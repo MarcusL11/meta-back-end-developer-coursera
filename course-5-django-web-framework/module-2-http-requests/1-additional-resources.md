@@ -1,0 +1,15 @@
+# Additional resources
+
+- [Creating views - official documentation](https://docs.djangoproject.com/en/4.1/topics/http/views/)
+- [Class-based views - official](https://docs.djangoproject.com/en/4.1/topics/class-based-views/)
+- [The render function in Django](https://docs.djangoproject.com/en/4.1/topics/http/shortcuts/#render)
+- [Getting query parameters from a request in Django ](https://docs.djangoproject.com/en/4.1/topics/http/urls/#path-converters)
+- [The HTTP server response](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
+- [The django.urls functins for use in URLconfs](https://docs.djangoproject.com/en/4.1/ref/urls/)
+- [URL dispatcher](https://docs.djangoproject.com/en/4.1/topics/http/urls/#url-dispatcher)
+- [URL official](https://docs.djangoproject.com/en/4.1/topics/http/urls/#how-django-processes-a-request)
+- [Regular Expression](https://docs.djangoproject.com/en/4.1/topics/http/urls/#using-regular-expressions)
+- [Django url mapping](https://docs.djangoproject.com/en/4.1/topics/http/views/#mapping-urls-to-views)
+- [geturl parameters in dango](https://docs.djangoproject.com/en/4.1/topics/http/urls/#how-django-processes-a-request)
+- [Render HTML forms - GET and POST in django](https://docs.djangoproject.com/en/4.1/topics/forms/)
+- [Htto request response object](https://docs.djangoproject.com/en/4.1/ref/request-response/)
