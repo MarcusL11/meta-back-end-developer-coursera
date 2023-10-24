@@ -1,6 +1,6 @@
 # Different types of routing in DRF
 
-## Hot to Example
+## How to Example
 
 Create a django project as you normally would with an applicaiton.
 
