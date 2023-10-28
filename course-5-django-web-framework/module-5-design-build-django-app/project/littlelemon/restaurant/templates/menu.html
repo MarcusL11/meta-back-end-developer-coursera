@@ -1,0 +1,26 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<h1>Menu</h1>
+<!--Begin col-->
+<div class="column">
+  <!-- Step 14: Create for loop -->
+  {% for item in menu.menu %}
+  <p>
+    <!-- Step 14: Add DTL variable for name -->
+    <a href="{% url 'menu_item' pk=item.pk %}"> {{item.name}} </a>
+    <!-- 
+        Personal Note: Regarding '{% url 'menu_item' pk=item.pk %}', 
+        the syntax 'menu_item' is correct because it refers to the name 
+        of the URL pattern defined in the Django project's URL configuration.
+        (See urls.py of the app level and look for display_menu_item view, 
+        then see the name of the URL pattern is assined with "menu_item")
+    -->
+    <span class="menu-price">
+      <!-- Step 14: Add DTL variable for price -->
+      ${{item.price}}.00
+    </span>
+  </p>
+  <!-- Step 14: End or loop -->
+  {% endfor %}
+</div>
+<!--End col-->
+{% endblock %}
