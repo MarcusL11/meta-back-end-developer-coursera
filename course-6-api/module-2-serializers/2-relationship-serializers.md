@@ -16,7 +16,7 @@ class MenuItems(models.Model):
     title = models.CharField(max_length = 255)
     price = models.DecimalField(max_digits = 6, decimal_places =2)
     inventory = models.SmallIntegerField()
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, default = 1)
+    category = models.ForeignKey('Category', on_delete=models.PROTECT, default = 1)
 ```
 
 When creating a ForeignKey, you have to make sure that the category cannot be deleted before all the related menu items are deleted first. This is done using `on_delete=models.PROTECT`
@@ -70,7 +70,7 @@ class Category(models.Model):
     slug = models.SlugField()
     title = models.CharField(max_length = 255)
 
-    def __str__(self)--> str:
+    def __str__(self) -> str:
         return self.title
 
 class MenuItems(models.Model):
@@ -114,13 +114,13 @@ from .serializers import MenuItemSeriazlier
 @api_view()
 def menu_items(request):
     items = MenuItem.objects.select_related('category').all()
-    serialized_item = MenuItemSerializer(item, many = true)
+    serialized_item = MenuItemSerializer(items, many = true)
     return Response(serialized_item.data)
 
 @api_view()
 def single_items(request, id):
-    items = MenuItem.objects.all()
-    serialized_item = MenuItemSerializer(item)
+    items = MenuItem.objects.get(pk=id)
+    serialized_item = MenuItemSerializer(items)
     return Response(serialized_item.data)
 ```
 

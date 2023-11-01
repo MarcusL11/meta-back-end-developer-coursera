@@ -1,0 +1,10 @@
+Users and passwords list
+
+Username: admin
+email: admin@littlelemon.com
+passwrod: password
+
+Username: manager
+email: manager@littlelemon.com
+passwrod: pass123!@#
+

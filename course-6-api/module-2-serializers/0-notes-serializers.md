@@ -34,8 +34,9 @@ def menu_items(request):
     items = MenuItem.objects.all()
     return Response(items.values())
 
-# Class based View Example
 ```
+
+## Creating the sserializers
 
 - If there are specific fields you don't want to expose to the public, you cannot hide it without a using a serializers
 - Open the `serializers.py` file and write the following code:
@@ -48,7 +49,7 @@ class MenuItemSerializers(serializers.Serializer):
     title = serializers.CharField(max_length=255)
 ```
 
-- the serializers field are the same as the ones in the Model. You can add all the ones that you want to be displayed in public here.
+- If serializers field are the same as the ones in the Model. You can add all the ones that you want to be displayed in public here.
 
 - lets visit the `views.py` file and add the serializer
 
@@ -80,13 +81,13 @@ from .serializers import MenuItemSeriazlier
 @api_view()
 def menu_items(request):
     items = MenuItem.objects.all()
-    serialized_item = MenuItemSerializer(item, many = true)
+    serialized_item = MenuItemSerializer(items, many = true)
     return Response(serialized_item.data)
 
 @api_view()
 def single_items(request, id):
-    items = MenuItem.objects.all()
-    serialized_item = MenuItemSerializer(item)
+    items = MenuItem.objects.get(pk=id)
+    serialized_item = MenuItemSerializer(items)
     return Response(serialized_item.data)
 ```
 

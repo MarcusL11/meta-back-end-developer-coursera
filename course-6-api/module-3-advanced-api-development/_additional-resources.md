@@ -1,0 +1,5 @@
+[Memcached](https://memcached.org/)
+[redis](https://redis.io/)
+[Djoser Documentation](https://djoser.readthedocs.io/en/latest/)
+[Djoser Source Code](https://github.com/sunscrapers/djoser)
+[Simple JWT Source COde](https://github.com/jazzband/djangorestframework-simplejwt)
