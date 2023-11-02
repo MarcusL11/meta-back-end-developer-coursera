@@ -22,10 +22,15 @@ urlpatterns = [
     path('api/menu-items/<int:menu_id>', views.single_menu_item, name='single_items'),
 
     # User group management endpoints
-    path('api/groups/manager/users', views.manager_set, name='assign_user_to_manager_group'),
+    path('api/groups/manager/users', views.manager_set, name='get_assign_user_to_manager_group'),
     path('api/groups/manager/users/<int:user_id>', views.manage_delete, name='delete_user_from_manager_group'),
+    path('api/groups/delivery-crew/users', views.delivery_crew_set, name='get_assign_user_to_delivery_crew_group'),
+    path('api/groups/delivery-crew/users/<int:user_id>', views.delivery_crew_delete, name='delete_user_from_delivery_crew_group'),
  
- 
+    # Cart management endpoints
+    path('api/cart/menu-items', views.cart_set, name='cart_items'),
+    
+    # Other URLS
     path('api/category-items/', views.category_items, name='category_items'),
     path('api/menu-of-the-day/<int:menu_id>', views.menu_of_day, name='menu_of_the_day'),
 

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Menu
 from .models import Category
+from .models import Cart
 from django.contrib.auth.models import User 
 from django.contrib.auth.models import Group
 
@@ -31,6 +32,22 @@ class ManagerSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data) 
         return user
+
+class MenuItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Menu
+        fields = ['id', 'name', 'price']
+
+class CartSerializer(serializers.ModelSerializer):
+    menuitem = MenuItemSerializer(read_only=True)
+    menuitem_id = serializers.IntegerField(write_only=True)
+    user = UserSerializer(read_only=True)
+    user_id = serializers.IntegerField(write_only=True)    
+    
+    class Meta:
+        model = Cart
+        fields = ['menuitem', 'menuitem_id', 'unit_price', 'quantity','price', 'user', 'user_id']
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

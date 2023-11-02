@@ -112,22 +112,22 @@ You can use Djoser in your project to automatically create the following endpoin
 
 ## User group management endpoints
 
-| Endpoint                                   | Role    | Method | Purpose                                                                                                                                                | Status      |
-| ------------------------------------------ | ------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
-| `/api/groups/manager/users`                | Manager | GET    | Returns all managers                                                                                                                                   | Done        |
-| `/api/groups/manager/users`                | Manager | POST   | Assigns the user in the payload to the manager group and returns 201-Created                                                                           | Done        |
-| `/api/groups/manager/users/{userId}`       | Manager | DELETE | Removes this particular user from the manager group and returns 200 – Success if everything is okay. If the user is not found, returns 404 – Not found | Done        |
-| `/api/groups/delivery-crew/users`          | Manager | GET    | Returns all delivery crew                                                                                                                              | in progress |
-| `/api/groups/delivery-crew/users`          | Manager | POST   | Assigns the user in the payload to delivery crew group and returns 201-Created HTTP                                                                    | in progress |
-| `/api/groups/delivery-crew/users/{userId}` | Manager | DELETE | Removes this user from the manager group and returns 200 – Success if everything is okay. If the user is not found, returns 404 – Not found            | in progress |
+| Endpoint                                   | Role    | Method | Purpose                                                                                                                                                | Status |
+| ------------------------------------------ | ------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| `/api/groups/manager/users`                | Manager | GET    | Returns all managers                                                                                                                                   | Done   |
+| `/api/groups/manager/users`                | Manager | POST   | Assigns the user in the payload to the manager group and returns 201-Created                                                                           | Done   |
+| `/api/groups/manager/users/{userId}`       | Manager | DELETE | Removes this particular user from the manager group and returns 200 – Success if everything is okay. If the user is not found, returns 404 – Not found | Done   |
+| `/api/groups/delivery-crew/users`          | Manager | GET    | Returns all delivery crew                                                                                                                              | Done   |
+| `/api/groups/delivery-crew/users`          | Manager | POST   | Assigns the user in the payload to delivery crew group and returns 201-Created HTTP                                                                    | Done   |
+| `/api/groups/delivery-crew/users/{userId}` | Manager | DELETE | Removes this user from the delivery crew group and returns 200 – Success if everything is okay. If the user is not found, returns 404 – Not found      | Done   |
 
 ## Cart management endpoints
 
-| Endpoint               | Role     | Method | Purpose                                                                                         |
-| ---------------------- | -------- | ------ | ----------------------------------------------------------------------------------------------- |
-| `/api/cart/menu-items` | Customer | GET    | Returns current items in the cart for the current user token                                    |
-| `/api/cart/menu-items` | Customer | POST   | Adds the menu item to the cart. Sets the authenticated user as the user id for these cart items |
-| `/api/cart/menu-items` | Customer | DELETE | Deletes all menu items created by the current user token                                        |
+| Endpoint               | Role     | Method | Purpose                                                                                         | My Status   |
+| ---------------------- | -------- | ------ | ----------------------------------------------------------------------------------------------- | ----------- |
+| `/api/cart/menu-items` | Customer | GET    | Returns current items in the cart for the current user token                                    | In progress |
+| `/api/cart/menu-items` | Customer | POST   | Adds the menu item to the cart. Sets the authenticated user as the user id for these cart items | In progress |
+| `/api/cart/menu-items` | Customer | DELETE | Deletes all menu items created by the current user token                                        | In progress |
 
 ## Order
 
