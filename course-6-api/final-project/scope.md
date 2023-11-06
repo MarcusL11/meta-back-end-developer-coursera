@@ -123,24 +123,24 @@ You can use Djoser in your project to automatically create the following endpoin
 
 ## Cart management endpoints
 
-| Endpoint               | Role     | Method | Purpose                                                                                         | My Status   |
-| ---------------------- | -------- | ------ | ----------------------------------------------------------------------------------------------- | ----------- |
-| `/api/cart/menu-items` | Customer | GET    | Returns current items in the cart for the current user token                                    | In progress |
-| `/api/cart/menu-items` | Customer | POST   | Adds the menu item to the cart. Sets the authenticated user as the user id for these cart items | In progress |
-| `/api/cart/menu-items` | Customer | DELETE | Deletes all menu items created by the current user token                                        | In progress |
+| Endpoint               | Role     | Method | Purpose                                                                                         | My Status |
+| ---------------------- | -------- | ------ | ----------------------------------------------------------------------------------------------- | --------- |
+| `/api/cart/menu-items` | Customer | GET    | Returns current items in the cart for the current user token                                    | Done      |
+| `/api/cart/menu-items` | Customer | POST   | Adds the menu item to the cart. Sets the authenticated user as the user id for these cart items | Done      |
+| `/api/cart/menu-items` | Customer | DELETE | Deletes all menu items created by the current user token                                        | Done      |
 
 ## Order
 
-| Endpoint                | Role          | Method     | Purpose                                                                                                                                                                                           |
-| ----------------------- | ------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/api/orders`           | Customer      | GET        | Returns all orders with order items created by this user                                                                                                                                          |
-| `/api/orders`           | Customer      | POST       | Creates a new order item for the current user. Gets current cart items from the cart endpoints and adds those items to the order items table. Then deletes all items from the cart for this user. |
-| `/api/orders/{orderId}` | Customer      | GET        | Returns all items for this order id. If the order ID doesn’t belong to the current user, it displays an appropriate HTTP error status code.                                                       |
-| `/api/orders`           | Manager       | GET        | Returns all orders with order items by all users                                                                                                                                                  |
-| `/api/orders/{orderId}` | Manager       | PUT, PATCH | Updates the order. A manager can use this endpoint to set a delivery crew to this order, and also update the order status to 0 or 1.                                                              |
-| `/api/orders/{orderId}` | Manager       | DELETE     | Deletes this order                                                                                                                                                                                |
-| `/api/orders`           | Delivery crew | GET        | Returns all orders with order items assigned to the delivery crew                                                                                                                                 |
-| `/api/orders/{orderId}` | Delivery crew | PATCH      | A delivery crew can use this endpoint to update the order status to 0 or 1. The delivery crew will not be able to update anything else in this order.                                             |
+| Endpoint                | Role          | Method     | Purpose                                                                                                                                                                                           | My Status   |
+| ----------------------- | ------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `/api/orders`           | Customer      | GET        | Returns all orders with order items created by this user                                                                                                                                          | Done        |
+| `/api/orders`           | Customer      | POST       | Creates a new order item for the current user. Gets current cart items from the cart endpoints and adds those items to the order items table. Then deletes all items from the cart for this user. | Done        |
+| `/api/orders/{orderId}` | Customer      | GET        | Returns all items for this order id. If the order ID doesn’t belong to the current user, it displays an appropriate HTTP error status code.                                                       | Done        |
+| `/api/orders`           | Manager       | GET        | Returns all orders with order items by all users                                                                                                                                                  | Done        |
+| `/api/orders/{orderId}` | Manager       | PUT, PATCH | Updates the order. A manager can use this endpoint to set a delivery crew to this order, and also update the order status to 0 or 1.                                                              | In Progress |
+| `/api/orders/{orderId}` | Manager       | DELETE     | Deletes this order                                                                                                                                                                                | In Progress |
+| `/api/orders`           | Delivery crew | GET        | Returns all orders with order items assigned to the delivery crew                                                                                                                                 | In Progress |
+| `/api/orders/{orderId}` | Delivery crew | PATCH      | A delivery crew can use this endpoint to update the order status to 0 or 1. The delivery crew will not be able to update anything else in this order.                                             | In Progress |
 
 ## Additional step
 
