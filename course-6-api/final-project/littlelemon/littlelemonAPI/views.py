@@ -6,6 +6,7 @@ from .serializers import *
 from django.contrib.auth.models import User, Group
 from django.shortcuts import get_object_or_404
 from datetime import datetime
+from django.core.paginator import Paginator, EmptyPage
 
 
 
@@ -134,6 +135,27 @@ def deliveryCrewDelete(request, id=None):
 def menu(request):
     if request.method == 'GET':
         menu = Menu.objects.all()
+        category_name = request.query_params.get('category')
+        to_price = request.query_params.get('to_price')
+        search = request.query_params.get('search')
+        ordering = request.query_params.get('ordering')
+        perpage = request.query_params.get('perpage', default=2)
+        page = request.query_params.get('page', default=1)
+        if category_name: 
+            menu = menu.filter(category__name=category_name)
+        if to_price:
+            menu = menu.filter(price__lte=to_price)
+        if search:
+            menu = menu.filter(name__icontains=search)
+        if ordering:
+            ordering_fields = ordering.split(",")
+            menu = menu.order_by(*ordering_fields)
+        
+        paginator = Paginator(menu, per_page=perpage)
+        try:
+            menu = paginator.page(number=page)
+        except EmptyPage:
+            menu = []
         serialized_menu = MenuSerializer(menu, many=True)
         return Response(serialized_menu.data, status=status.HTTP_200_OK)
     if request.method == 'POST':
