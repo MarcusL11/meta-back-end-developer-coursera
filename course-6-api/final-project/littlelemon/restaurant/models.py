@@ -26,12 +26,18 @@ class Cart(models.Model):
    unitPrice = models.DecimalField(max_digits=6, decimal_places=2)
    price = models.DecimalField(max_digits=6, decimal_places=2)
    
+   def __str__(self):
+      return  str(self.userId) + ' ' + self.itemId.name + ' ' + str(self.quantity) + ' ' + str(self.price)
+   
 class Order(models.Model):
    userId = models.ForeignKey('auth.User', on_delete = models.CASCADE)
    orderDate = models.DateTimeField()
    totalPrice = models.DecimalField(max_digits=6, decimal_places=2, default=0)
-   status = models.CharField(max_length=200)
+   status = models.IntegerField(default=0)
    deliveryId = models.IntegerField()
+   
+   def __str__(self):
+      return self.userId.username + ' ' + str(self.status) + ' ' + str(self.deliveryId)
 
 class OrderItem(models.Model):
    userId = models.ForeignKey('auth.User', on_delete = models.CASCADE)
@@ -41,5 +47,7 @@ class OrderItem(models.Model):
    unitPrice = models.DecimalField(max_digits=6, decimal_places=2)
    price = models.DecimalField(max_digits=6, decimal_places=2)
    
+   def __str__(self):
+      return self.itemId.name + ' ' + str(self.quantity) + ' ' + str(self.price)
 
    

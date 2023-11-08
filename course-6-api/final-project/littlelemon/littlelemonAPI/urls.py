@@ -24,7 +24,8 @@ urlpatterns = [
     
     # Order Management endpoints
     path('orders', views.order),
-    
+    path('orders/<int:id>', views.orderItem),    
+
     
     # Menu-items endpoints
     # path('/menu-items', views.menuItems)

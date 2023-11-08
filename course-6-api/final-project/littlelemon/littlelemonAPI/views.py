@@ -151,7 +151,7 @@ def menu(request):
 
 # endpoint /api/menu-items/<int:menu_id>
 # purpose: Return a single menu item, update a single menu item, and delete a single menu item
-@api_view(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def menuItem(request, id=None):
     if request.method == 'GET':
@@ -222,20 +222,27 @@ def cart(request):
     
 # endpoint /api/orders/
 # purpose: {
-    # GET: Returns all orders with order items created by this user,
+    # GET: Returns all orders with order items created by this user.  Managers can see all orders.
     # POST: Creates a new order for the user.  Gets current items from the cart endpoints and adds to the order items.  Deletes all items from the cart.
-
-# Thought process:
-# Check if the user has a cart (if not, return an error message)
+#}
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def order(request):
     if request.method == 'GET':
-        userId = request.user.id
-        userId = get_object_or_404(User, pk=userId)
-        order = Order.objects.filter(userId=userId)
-        serialized_order = OrderSerializer(order, many=True)
-        return Response(serialized_order.data, status=status.HTTP_200_OK)
+        if request.user.groups.filter(name='Manager').exists():
+            order = Order.objects.all()
+            serialized_order = OrderSerializer(order, many=True)
+            return Response(serialized_order.data, status=status.HTTP_200_OK)
+        if request.user.groups.filter(name='Delivery crew').exists():
+            userId = request.user.id
+            order = Order.objects.filter(deliveryId=userId)
+            serialized_order = OrderSerializer(order, many=True)
+            return Response(serialized_order.data, status=status.HTTP_200_OK)
+        else:
+            deliveryId = request.user.id
+            order = Order.objects.filter(deliveryId=deliveryId)
+            serialized_order = OrderSerializer(order, many=True)
+            return Response(serialized_order.data, status=status.HTTP_200_OK)
     if request.method == 'POST':
         userId = request.user.id
         userId = get_object_or_404(User, pk=userId)
@@ -248,7 +255,7 @@ def order(request):
                 'userId': userId, 
                 'orderDate': datetime.now(), 
                 'totalPrice': total_price, 
-                'status': 'Pending', 
+                'status': 0, 
                 'deliveryId': 0, 
                 }
             Order.objects.create(**data)
@@ -272,11 +279,64 @@ def order(request):
     else:
         message = {'message': 'request method is not allowed'}
         return Response(message, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-# Get all items from the cart that belong to the user
-# Sum up the price of all items in the cart and save it to a variable called total_price
-# Create a new order for the user in the Order table (order_date, user_id, order_status, total_price, delivery_crew_id) 
-# delete all items from the cart that belong to the user
-
 
 # endpoint /api/orders/{orderId}
-# purpose: 
+# purpose:  customers can retrieve their order based on the Order ID. Managers can PUT, PATCH, and DELETE the order.
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def orderItem(request, id=None):
+    if request.method =='GET':
+        # check if the order belongs to the user
+        userId = request.user.id
+        userId = get_object_or_404(User, pk=userId)
+        order = Order.objects.filter(userId=userId, id=id)
+        if order:
+            orderItem = OrderItem.objects.filter(orderId=id)
+            serialized_orderItem = OrderItemSerializer(orderItem, many=True)
+            return Response(serialized_orderItem.data, status=status.HTTP_200_OK)
+        else:
+            message = {'message': 'Order ID {} does not exist or belong to you'.format(id)}
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
+    if request.method in ['PUT', 'PATCH']:
+        if request.user.groups.filter(name='Manager').exists():
+            order = get_object_or_404(Order, pk=id)
+            deliveryId = request.data.get('deliveryId')
+            statusUpdate = request.data.get('status')
+            if deliveryId and statusUpdate:
+                deliveryIdC้heck = get_object_or_404(User, pk=deliveryId)
+                if deliveryIdC้heck.groups.filter(name='Delivery crew').exists():                
+                    order.deliveryId = deliveryId
+                    order.status = statusUpdate
+                    order.save()
+                    message = {'message': 'Delivery Crew ID {} assigned to Order ID {} with a status of {}'.format(deliveryId, id, statusUpdate)}            
+                    return Response(message, status=status.HTTP_200_OK)
+                else:
+                    message = {'message': 'Delivery Crew ID {} does not exist or is not a Delivery Crew'.format(deliveryId)}
+                    return Response(message, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                message = {'message': 'deliverId and status fileds are required'}
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)                
+        if request.user.groups.filter(name='Delivery crew').exists():
+            order = get_object_or_404(Order, pk=id)
+            statusUpdate = request.data.get('status')
+            if statusUpdate:
+                order.status = statusUpdate
+                order.save()
+                message = {'message': 'Order ID {} has been updated with a with a status of {}'.format(id, statusUpdate)}            
+                return Response(message, status=status.HTTP_200_OK)
+            else:
+                message = {'message': 'deliverId and status fileds are required'}
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)                
+        else:
+            return Response({'message': 'Youre not authorized for this action'}, status=status.HTTP_403_FORBIDDEN)
+    if request.method =='DELETE':
+        if request.user.groups.filter(name='Manager').exists():
+            order = get_object_or_404(Order, pk=id)
+            order.delete()
+            message = {'message': 'Order ID {} deleted successfully'.format(id)}
+            return Response(message, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'Youre not authorized for this action'}, status=status.HTTP_403_FORBIDDEN)
+    else:
+        message = {'message': 'request method is not allowed'}
+        return Response(message, status=status.HTTP_405_METHOD_NOT_ALLOWED)
