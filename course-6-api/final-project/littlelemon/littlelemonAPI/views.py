@@ -1,7 +1,8 @@
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.throttling import UserRateThrottle
 from .serializers import *
 from django.contrib.auth.models import User, Group
 from django.shortcuts import get_object_or_404
@@ -129,9 +130,12 @@ def deliveryCrewDelete(request, id=None):
         return Response(message, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 # endpoint /api/menu-items
+# search functionality: category, price, search, ordering, perpage, page
+# throttle: 10 requests per minute for authenticated users
 # purpose: Return all menu items and create menu items
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
+@throttle_classes([UserRateThrottle])
 def menu(request):
     if request.method == 'GET':
         menu = Menu.objects.all()
@@ -172,9 +176,11 @@ def menu(request):
         return Response(message, status=status.HTTP_403_FORBIDDEN)
 
 # endpoint /api/menu-items/<int:menu_id>
+# throttle: 10 requests per minute for authenticated users
 # purpose: Return a single menu item, update a single menu item, and delete a single menu item
 @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
 @permission_classes([IsAuthenticated])
+@throttle_classes([UserRateThrottle])
 def menuItem(request, id=None):
     if request.method == 'GET':
         menu_item = Menu.objects.get(id=id)
@@ -201,9 +207,11 @@ def menuItem(request, id=None):
         return Response(message, status=status.HTTP_403_FORBIDDEN)
     
 # endpoint /api/cart/menu-items
+# throttle: 10 requests per minute for authenticated users
 # purpose: Return all items in the cart of the user, add items to the cart, and delete all items in the cart
 @api_view(['GET', 'POST', 'DELETE'])
 @permission_classes([IsAuthenticated])
+@throttle_classes([UserRateThrottle])
 def cart(request):
     if request.method == 'POST':
         serialized_cart = CartItemsSerializer(data=request.data)
@@ -243,6 +251,7 @@ def cart(request):
         return Response(message, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
 # endpoint /api/orders/
+# search functionality: category, price, search, ordering, perpage, page
 # purpose: {
     # GET: Returns all orders with order items created by this user.  Managers can see all orders.
     # POST: Creates a new order for the user.  Gets current items from the cart endpoints and adds to the order items.  Deletes all items from the cart.
@@ -253,16 +262,79 @@ def order(request):
     if request.method == 'GET':
         if request.user.groups.filter(name='Manager').exists():
             order = Order.objects.all()
+            category_name = request.query_params.get('category')
+            to_price = request.query_params.get('to_price')
+            search = request.query_params.get('search')
+            ordering = request.query_params.get('ordering')
+            perpage = request.query_params.get('perpage', default=2)
+            page = request.query_params.get('page', default=1)
+            if category_name: 
+                menu = menu.filter(category__name=category_name)
+            if to_price:
+                menu = menu.filter(price__lte=to_price)
+            if search:
+                menu = menu.filter(name__icontains=search)
+            if ordering:
+                ordering_fields = ordering.split(",")
+                menu = menu.order_by(*ordering_fields)
+            
+            paginator = Paginator(order, per_page=perpage)
+            try:
+                menu = paginator.page(number=page)
+            except EmptyPage:
+                menu = []
             serialized_order = OrderSerializer(order, many=True)
             return Response(serialized_order.data, status=status.HTTP_200_OK)
         if request.user.groups.filter(name='Delivery crew').exists():
             userId = request.user.id
             order = Order.objects.filter(deliveryId=userId)
+            category_name = request.query_params.get('category')
+            to_price = request.query_params.get('to_price')
+            search = request.query_params.get('search')
+            ordering = request.query_params.get('ordering')
+            perpage = request.query_params.get('perpage', default=2)
+            page = request.query_params.get('page', default=1)
+            if category_name: 
+                menu = menu.filter(category__name=category_name)
+            if to_price:
+                menu = menu.filter(price__lte=to_price)
+            if search:
+                menu = menu.filter(name__icontains=search)
+            if ordering:
+                ordering_fields = ordering.split(",")
+                menu = menu.order_by(*ordering_fields)
+            
+            paginator = Paginator(order, per_page=perpage)
+            try:
+                menu = paginator.page(number=page)
+            except EmptyPage:
+                menu = []            
             serialized_order = OrderSerializer(order, many=True)
             return Response(serialized_order.data, status=status.HTTP_200_OK)
         else:
             deliveryId = request.user.id
             order = Order.objects.filter(deliveryId=deliveryId)
+            category_name = request.query_params.get('category')
+            to_price = request.query_params.get('to_price')
+            search = request.query_params.get('search')
+            ordering = request.query_params.get('ordering')
+            perpage = request.query_params.get('perpage', default=2)
+            page = request.query_params.get('page', default=1)
+            if category_name: 
+                menu = menu.filter(category__name=category_name)
+            if to_price:
+                menu = menu.filter(price__lte=to_price)
+            if search:
+                menu = menu.filter(name__icontains=search)
+            if ordering:
+                ordering_fields = ordering.split(",")
+                menu = menu.order_by(*ordering_fields)
+            
+            paginator = Paginator(menu, per_page=perpage)
+            try:
+                menu = paginator.page(number=page)
+            except EmptyPage:
+                menu = []            
             serialized_order = OrderSerializer(order, many=True)
             return Response(serialized_order.data, status=status.HTTP_200_OK)
     if request.method == 'POST':

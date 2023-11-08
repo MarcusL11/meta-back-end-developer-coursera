@@ -1,58 +1,36 @@
-# Current Status
+# LittleLemon API Final Project
 
-- I should test first if I can authenticate a Employee or Customer with via the auth/token/login method using Djoser
-- I will need to create models for Employees, Customers, and Groups for the users on the platform.
--
+## users:
 
-# Project Criteria
+### User001
 
-In this project, your APIs need to make it possible for your end-users to perform certain tasks and your reviewer will be looking for the following functionalities.
+- usernam: user001
+- password: password123!@#
+- token: 10ad443f2dda7284c502adedc9aba009609ec4a2
+- Group: Manager
 
-1. The admin can assign users to the manager group
+### User002
 
-2. You can access the manager group with an admin token
+- usernam: user002
+- password: password123!@#
+- token: 18fd36893e9b1ddd425b1e1c19bee54bc5735bfe
+- Group:[]
 
-3. The admin can add menu items (DONE)
+### User003
 
-4. The admin can add categories (DONE)
+- usernam: user003
+- password: password123!@#
+- token: f6e1a578985904f6b7e019f5e0207939cff2f1d7
+- Group:Delivery crew
 
-5. Managers can log in (DONE)
+### User004
 
-6. Managers can update the item of the day (DONE)
+- usernam: user004
+- password: password123!@#
+- token:
+- Group:
 
-7. Managers can assign users to the delivery crew
-
-8. Managers can assign orders to the delivery crew
-
-9. The delivery crew can access orders assigned to them
-
-10. The delivery crew can update an order as delivered
-
-11. Customers can register
-
-12. Customers can log in using their username and password and get access tokens
-
-13. Customers can browse all categories
-
-14. Customers can browse all the menu items at once
-
-15. Customers can browse menu items by category
-
-16. Customers can paginate menu items
-
-17. Customers can sort menu items by price
-
-18. Customers can add menu items to the cart
-
-19. Customers can access previously added items in the cart
-
-20. Customers can place orders
-
-21. Customers can browse their own orders
-
-You'll also need to give feedback on and grade the assignments of two other learners using the same criteria.
-
-# Scope of Project
+## Scope of Project
 
 ## Using Pipenv
 
