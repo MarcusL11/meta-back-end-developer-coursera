@@ -26,6 +26,7 @@ class GroupSetSerializer(serializers.ModelSerializer):
         fields = ['id']
 
 class CategorySerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=200, required=True)
     class Meta:
         model = Category
         fields = ['id', 'name']
@@ -35,11 +36,11 @@ class MenuSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=200, required=True)
     price = serializers.IntegerField(required=True)
     category = CategorySerializer(read_only=True)
-    category_name = serializers.CharField(source='category.name', read_only=True)
+    featured = serializers.BooleanField(required=False)
         
     class Meta:
         model = Menu
-        fields = ['id', 'name', 'price', 'category', 'category_name']
+        fields = ['id', 'name', 'price', 'category', 'featured']
         
 class CartSerializer(serializers.ModelSerializer):
     itemName = serializers.CharField(source='itemId.name', read_only=True)    

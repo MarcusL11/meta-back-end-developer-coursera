@@ -1,34 +1,89 @@
 # LittleLemon API Final Project
 
-## users:
+## User List:
+
+### Admin
+
+- user_id: 4
+- usernam: admin
+- password: password123!@#
+- token: c86bb6e7f9d10bf2342daa6500d540d99e8c866b
+- group: admin
 
 ### User001
 
+- user_id: 2
 - usernam: user001
 - password: password123!@#
 - token: 10ad443f2dda7284c502adedc9aba009609ec4a2
-- Group: Manager
+- group: Manager
 
 ### User002
 
+- user_id: 3
 - usernam: user002
 - password: password123!@#
 - token: 18fd36893e9b1ddd425b1e1c19bee54bc5735bfe
-- Group:[]
+- group: Delivery crew
 
 ### User003
 
+- user_id: 5
 - usernam: user003
 - password: password123!@#
 - token: f6e1a578985904f6b7e019f5e0207939cff2f1d7
-- Group:Delivery crew
+- group: []
 
 ### User004
 
+- user_id: 6
 - usernam: user004
 - password: password123!@#
-- token:
-- Group:
+- token:[]
+- group: []
+
+## Steps to test API endpoints:
+
+**Create / register a customer user**
+
+- access endpoint http://127.0.0.1:8000/auth/users/ with `username`, `password` and `email` field
+
+**Get an access token for the customer user**
+
+- access this endpoint with the `username` and `password `field http://127.0.0.1:8000/auth/token/login/
+
+**Putting Items in your Cart:**
+
+- Access http://127.0.0.1:8000/api/cart/menu-items endpoint with a `POST` request method to create select your items. Inputs field names are: `itemId` and `quantity`. You can access the menu item information with http://127.0.0.1:8000/api/menu-items to see the `itemId` ('id') of each menu items. Current limit is 2 items per page, but you can adjust this by adding `?perpage=10` i.e. http://127.0.0.1:8000/api/menu-items?perpage=10
+
+**Turn your items into an Order**
+
+- Access http://127.0.0.1:8000/api/cart/orders endpoint with a `POST` request method to create your Order with the selected items from the previous step.
+
+**Review all the existing order in the system as a Manger**
+
+- Managers you can review all orders in the system by accessing this endpoint: http://127.0.0.1:8000/api/orders
+
+**Assigned an Order to a Delivery Crew Member as a Manager**
+
+- Managers can review all existing orders via this endpoint http://127.0.0.1:8000/api/orders. Take note of the `id` which is the `orderId` you'll need for the next step
+- To assign an Order to a Delivery crew, Managers will need to access the endpoint with the `orderId` - i.e. http://127.0.0.1:8000/api/orders/3 where `3` is the `orderId`
+- This endpoint expenses an input data for the fields `deliveryId` and `status` with a `PATCH` or `PUT` request method
+- `deliveryId` is the userId that belongs to the `Delivery crew` group
+- status is either `1` for delivered or `0` not delivered.
+
+**View all Orders that has been assigned to you and update the status (as a Delivery crew)**
+
+- a Delivery crew can view all orders assigned to them via this endpoint http://127.0.0.1:8000/api/orders with a GET request method.
+- Update the status of the order via this endpoint: http://127.0.0.1:8000/api/orders/{orderId} which accepts the field status
+
+**6. Test serach, order and pagnation functions**
+
+- http://127.0.0.1:8000/api/menu-items?category_name=main
+- http://127.0.0.1:8000/api/menu-items?search=Doner
+- http://127.0.0.1:8000/api/menu-items?page=2
+- http://127.0.0.1:8000/api/menu-items?ordering=price
+- http://127.0.0.1:8000/api/menu-items?ordering=-price
 
 ## Scope of Project
 

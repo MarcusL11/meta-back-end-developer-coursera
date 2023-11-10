@@ -47,12 +47,12 @@ def userProfile(request, me=None):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def managerSet(request):
-    if request.user.groups.filter(name='Manager').exists() and request.method == 'GET':
+    if request.user.groups.filter(name='Admin').exists() and request.method == 'GET':
         managers = User.objects.filter(groups__name='Manager')
         serialized_managers = UserSerializer(managers, many=True)
         return Response(serialized_managers.data, status=status.HTTP_200_OK)
 
-    elif request.user.groups.filter(name='Manager').exists() and request.method == 'POST':
+    elif request.user.groups.filter(name='Admin').exists() and request.method == 'POST':
         serialized_manager = GroupSetSerializer(data=request.data)
         serialized_manager.is_valid(raise_exception=True)
         id = serialized_manager.validated_data['id']
@@ -71,7 +71,7 @@ def managerSet(request):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def managerDelete(request, id=None):
-    if request.user.groups.filter(name='Manager').exists() and request.method == 'DELETE':
+    if request.user.groups.filter(name='Admin').exists() and request.method == 'DELETE':
         user = get_object_or_404(User, pk=id)
         if user.groups.filter(name='Manager').exists():
             manager = Group.objects.get(name="Manager")
@@ -82,7 +82,7 @@ def managerDelete(request, id=None):
             message = {'message': 'User ID {} is not a Manager'.format(id)}
             return Response(message, status=status.HTTP_404_NOT_FOUND)
     else:
-        message = {'message': 'Youre not authorized for this action'}
+        message = {'message': 'request method is not allowed'}
         return Response(message, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         
 # endpoint /api/groups/delivery-crew/users
@@ -129,6 +129,29 @@ def deliveryCrewDelete(request, id=None):
         message = {'message': 'Youre not authorized for this action'}
         return Response(message, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+
+# endpoint /api/categories
+# purpose: Return all categories and add a new category
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def categories(request):
+    if request.method == 'GET':
+        categories = Category.objects.all()
+        serialized_categories = CategorySerializer(categories, many=True)
+        return Response(serialized_categories.data, status=status.HTTP_200_OK)
+    if request.method == 'POST':
+        if request.user.groups.filter(name='Admin').exists():
+            serialized_category = CategorySerializer(data=request.data)
+            serialized_category.is_valid(raise_exception=True)
+            serialized_category.save()
+            message = {'message': 'Category {} created successfully'.format(request.data['name'])}
+            return Response(message, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'message': 'Youre not authorized for this action'}, status=status.HTTP_403_FORBIDDEN)    
+    else:
+        message = {'message': 'request method is not allowed'}
+        return Response(message, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
 # endpoint /api/menu-items
 # search functionality: category, price, search, ordering, perpage, page
 # throttle: 10 requests per minute for authenticated users
@@ -163,7 +186,7 @@ def menu(request):
         serialized_menu = MenuSerializer(menu, many=True)
         return Response(serialized_menu.data, status=status.HTTP_200_OK)
     if request.method == 'POST':
-        if request.user.groups.filter(name='Manager').exists():
+        if request.user.groups.filter(name='Admin').exists():
             serialized_menu_item = MenuSerializer(data=request.data)
             serialized_menu_item.is_valid(raise_exception=True)
             serialized_menu_item.save()
@@ -183,7 +206,7 @@ def menu(request):
 @throttle_classes([UserRateThrottle])
 def menuItem(request, id=None):
     if request.method == 'GET':
-        menu_item = Menu.objects.get(id=id)
+        menu_item = get_object_or_404(Menu, pk=id)
         serialized_menu_item = MenuSerializer(menu_item)
         return Response(serialized_menu_item.data, status=status.HTTP_200_OK)
     elif request.method in ['PUT', 'PATCH']:
@@ -197,7 +220,7 @@ def menuItem(request, id=None):
         else:
             return Response({'message': 'Youre not authorized for this action'}, status=status.HTTP_403_FORBIDDEN)
     elif request.method == 'DELETE':
-        if request.user.groups.filter(name='Manager').exists():
+        if request.user.groups.filter(name='Admin').exists():
             menu_item = Menu.objects.get(id=id)
             menu_item.delete()
             message = {'message': 'Menu item {} deleted successfully'.format(id)}
@@ -250,7 +273,7 @@ def cart(request):
         message = {'message': 'request method is not allowed'}
         return Response(message, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
-# endpoint /api/orders/
+# endpoint /api/orders
 # search functionality: category, price, search, ordering, perpage, page
 # purpose: {
     # GET: Returns all orders with order items created by this user.  Managers can see all orders.
@@ -269,20 +292,20 @@ def order(request):
             perpage = request.query_params.get('perpage', default=2)
             page = request.query_params.get('page', default=1)
             if category_name: 
-                menu = menu.filter(category__name=category_name)
+                order = order.filter(category__name=category_name)
             if to_price:
-                menu = menu.filter(price__lte=to_price)
+                order = order.filter(price__lte=to_price)
             if search:
-                menu = menu.filter(name__icontains=search)
+                order = order.filter(name__icontains=search)
             if ordering:
                 ordering_fields = ordering.split(",")
-                menu = menu.order_by(*ordering_fields)
+                order = order.order_by(*ordering_fields)
             
             paginator = Paginator(order, per_page=perpage)
             try:
-                menu = paginator.page(number=page)
+                order = paginator.page(number=page)
             except EmptyPage:
-                menu = []
+                order = []
             serialized_order = OrderSerializer(order, many=True)
             return Response(serialized_order.data, status=status.HTTP_200_OK)
         if request.user.groups.filter(name='Delivery crew').exists():
@@ -295,25 +318,25 @@ def order(request):
             perpage = request.query_params.get('perpage', default=2)
             page = request.query_params.get('page', default=1)
             if category_name: 
-                menu = menu.filter(category__name=category_name)
+                order = order.filter(category__name=category_name)
             if to_price:
-                menu = menu.filter(price__lte=to_price)
+                order = order.filter(price__lte=to_price)
             if search:
-                menu = menu.filter(name__icontains=search)
+                order = order.filter(name__icontains=search)
             if ordering:
                 ordering_fields = ordering.split(",")
-                menu = menu.order_by(*ordering_fields)
+                order = order.order_by(*ordering_fields)
             
             paginator = Paginator(order, per_page=perpage)
             try:
-                menu = paginator.page(number=page)
+                order = paginator.page(number=page)
             except EmptyPage:
-                menu = []            
+                order = []            
             serialized_order = OrderSerializer(order, many=True)
             return Response(serialized_order.data, status=status.HTTP_200_OK)
         else:
-            deliveryId = request.user.id
-            order = Order.objects.filter(deliveryId=deliveryId)
+            userId = request.user.id
+            order = Order.objects.filter(userId=userId)
             category_name = request.query_params.get('category')
             to_price = request.query_params.get('to_price')
             search = request.query_params.get('search')
@@ -321,20 +344,20 @@ def order(request):
             perpage = request.query_params.get('perpage', default=2)
             page = request.query_params.get('page', default=1)
             if category_name: 
-                menu = menu.filter(category__name=category_name)
+                order = order.filter(category__name=category_name)
             if to_price:
-                menu = menu.filter(price__lte=to_price)
+                order = order.filter(price__lte=to_price)
             if search:
-                menu = menu.filter(name__icontains=search)
+                order = order.filter(name__icontains=search)
             if ordering:
                 ordering_fields = ordering.split(",")
-                menu = menu.order_by(*ordering_fields)
+                order = order.order_by(*ordering_fields)
             
-            paginator = Paginator(menu, per_page=perpage)
+            paginator = Paginator(order, per_page=perpage)
             try:
-                menu = paginator.page(number=page)
+                order = paginator.page(number=page)
             except EmptyPage:
-                menu = []            
+                order = []            
             serialized_order = OrderSerializer(order, many=True)
             return Response(serialized_order.data, status=status.HTTP_200_OK)
     if request.method == 'POST':
@@ -419,7 +442,7 @@ def orderItem(request, id=None):
                 message = {'message': 'Order ID {} has been updated with a with a status of {}'.format(id, statusUpdate)}            
                 return Response(message, status=status.HTTP_200_OK)
             else:
-                message = {'message': 'deliverId and status fileds are required'}
+                message = {'message': 'Status filed is required'}
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)                
         else:
             return Response({'message': 'Youre not authorized for this action'}, status=status.HTTP_403_FORBIDDEN)

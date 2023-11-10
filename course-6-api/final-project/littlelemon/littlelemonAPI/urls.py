@@ -6,8 +6,6 @@ urlpatterns = [
     # Create users and request tokens endpoints
     path('users', views.user),
     path('users/user/me', views.userProfile),
-    path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.authtoken')),
 
     # User group management endpoints
     path('groups/manager/users', views.managerSet),
@@ -18,11 +16,14 @@ urlpatterns = [
     # Menu-items endpoints
     path('menu-items', views.menu),
     path('menu-items/<int:id>', views.menuItem),
+
+    # Category endpoints
+    path('categories', views.categories),
     
     # Cart management endpoints
     path('cart/menu-items', views.cart),
     
     # Order Management endpoints
-    path('orders', views.order),
-    path('orders/<int:id>', views.orderItem),    
+    path('cart/orders', views.order),
+    path('cart/orders/<int:id>', views.orderItem),    
 ]

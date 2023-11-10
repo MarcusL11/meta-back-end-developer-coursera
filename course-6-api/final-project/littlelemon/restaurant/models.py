@@ -21,6 +21,7 @@ class Menu(models.Model):
    name = models.CharField(max_length=200)
    price = models.IntegerField()
    menu_item_description = models.CharField(max_length=1000, default='')
+   featured = models.BooleanField(default=False)
    category = models.ForeignKey('Category', on_delete = models.CASCADE, default=1)
    
    def __str__(self):
