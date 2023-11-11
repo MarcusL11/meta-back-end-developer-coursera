@@ -45,13 +45,24 @@
 - Status - Completed: [Course Certificate](https://coursera.org/share/c1b8e52344cb44f52665f0818fb28a83)
 </details>
 
+<details>
 <summary><b>Course 5: </b><a href=""><b>Django Web Framework</b></a></summary>
 
 - Module 1: [Introduction to Django]()
 - Module 2: []()
 - Module 3: []()
 - Module 4: []()
-- Status - In Progress: [Course Certificate]()
+- Status - Completed: [Course Certificate](https://coursera.org/verify/FXC8P4YS5GR5)
+</details>
+
+<details>
+<summary><b>Course 6: </b><a href=""><b>API</b></a></summary>
+
+- Module 1: [Introduction to Django]()
+- Module 2: []()
+- Module 3: []()
+- Module 4: []()
+- Status - Completed: [Course Certificate](https://coursera.org/verify/W73BAHWHTFK2)
 </details>
 
 ## Proof of Course Completion:
