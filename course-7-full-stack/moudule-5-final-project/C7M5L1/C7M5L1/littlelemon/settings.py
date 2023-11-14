@@ -73,17 +73,19 @@ TEMPLATES = [
 WSGI_APPLICATION = 'littlelemon.wsgi.application'
 
 
-# Database
+# Database  
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'reservations',
-        'HOST' : 'localhost',
-        'PORT' : '3306',
-        'USER' : 'root',
-        'PASSWORD' : 'password',
+        # 'ENGINE': 'django.db.backends.mysql',
+        # 'NAME': 'reservations',        
+        # 'HOST' : 'localhost',
+        # 'PORT' : '3306',
+        # 'USER' : 'root',
+        # 'PASSWORD' : 'password',
     }
 }
 
